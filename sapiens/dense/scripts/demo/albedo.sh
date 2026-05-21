@@ -2,11 +2,12 @@
 # Run albedo (intrinsic) estimation on a directory of images.
 
 cd "$(dirname "$(realpath "$0")")/../.." || exit
-SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-${HOME}/sapiens2_host}"
+SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-/home/gj/Projects/2026.04.30-sapiens2/sapiens2_host}"
 
 #----------------------------set your input and output directories-------------------------
-INPUT='../../demo/data'
-OUTPUT="${HOME}/Desktop/sapiens2/albedo/Outputs/vis"
+# INPUT='../../demo/data'
+INPUT='/home/gj/Projects/2026.04.30-sapiens2/demo_img'
+OUTPUT="/home/gj/Projects/2026.04.30-sapiens2/outputs/albedo/Outputs/vis/"
 
 #--------------------------MODEL CARD (uncomment one)---------------------------------------
 # MODEL_NAME='sapiens2_0.4b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/albedo/sapiens2_0.4b_albedo.safetensors"

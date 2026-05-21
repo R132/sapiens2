@@ -75,6 +75,11 @@ def main():
         base_path = os.path.join(args.output, image_name.rsplit(".")[0])
         cv2.imwrite(f"{base_path}.{image_name.rsplit('.')[1]}", vis_image)
 
+        mix_image = np.zeros_like(image)
+        mask = pred_labels != 0
+        mix_image[mask] = image[mask]
+        cv2.imwrite(f"{base_path}_mix.jpg", mix_image)
+
         if args.save_pred:
             np.save(f"{base_path}_seg.npy", pred_labels)
 

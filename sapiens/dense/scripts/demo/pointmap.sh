@@ -2,28 +2,29 @@
 # Run pointmap (3D) estimation on a directory of images.
 
 cd "$(dirname "$(realpath "$0")")/../.." || exit
-SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-${HOME}/sapiens2_host}"
+SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-/home/gj/Projects/2026.04.30-sapiens2/sapiens2_host}"
 
 #----------------------------set your input and output directories-------------------------
-INPUT='../../demo/data'
-OUTPUT="${HOME}/Desktop/sapiens2/pointmap/Outputs/vis"
+# INPUT='../../demo/data'
+INPUT='/home/gj/Projects/2026.04.30-sapiens2/demo_img'
+OUTPUT="/home/gj/Projects/2026.04.30-sapiens2/outputs/pointmap/Outputs/vis/"
 
 #--------------------------MODEL CARD (uncomment one)---------------------------------------
-# MODEL_NAME='sapiens2_0.4b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_0.4b_pointmap.safetensors"
+MODEL_NAME='sapiens2_0.4b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_0.4b_pointmap.safetensors"
 # MODEL_NAME='sapiens2_0.8b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_0.8b_pointmap.safetensors"
-MODEL_NAME='sapiens2_1b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_1b_pointmap.safetensors"
+# MODEL_NAME='sapiens2_1b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_1b_pointmap.safetensors"
 # MODEL_NAME='sapiens2_5b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/pointmap/sapiens2_5b_pointmap.safetensors"
 
 DATASET='render_people'
 MODEL="${MODEL_NAME}_pointmap_${DATASET}-1024x768"
 CONFIG_FILE="configs/pointmap/${DATASET}/${MODEL}.py"
-OUTPUT="${OUTPUT}/${MODEL_NAME}"
+# OUTPUT="${OUTPUT}/${MODEL_NAME}"
 
 ##-------------------------------------inference--------------------------------------------
 RUN_FILE='tools/vis/vis_pointmap.py'
 
-JOBS_PER_GPU=3; GPU_IDS=(0 1 2 3 4 5 6 7)
-# JOBS_PER_GPU=1; GPU_IDS=(0)
+# JOBS_PER_GPU=3; GPU_IDS=(0 1 2 3 4 5 6 7)
+JOBS_PER_GPU=1; GPU_IDS=(0)
 TOTAL_JOBS=$((JOBS_PER_GPU * ${#GPU_IDS[@]}))
 
 IMAGE_LIST="${INPUT}/image_list.txt"
@@ -62,7 +63,6 @@ for ((i=0; i<TOTAL_JOBS; i++)); do
   CMD="CUDA_VISIBLE_DEVICES=${GPU_ID} python ${RUN_FILE} \
     ${CONFIG_FILE} \
     ${CHECKPOINT} \
-    --save_pred \
     --input \"${INPUT}/image_paths_$((i+1)).txt\" \
     --output \"${OUTPUT}\""
   [ "$TOTAL_JOBS" -gt 1 ] && CMD="$CMD &"

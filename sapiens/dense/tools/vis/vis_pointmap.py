@@ -250,10 +250,14 @@ def main():
 
             if not args.no_save_predictions:
                 points = pointmap[mask > 0].reshape(-1, 3)  ## N x 3
-                pc = o3d.geometry.PointCloud()
-                colors = image[mask > 0] / 255.0
-                colors = colors[:, [2, 1, 0]]  # Convert BGR to RGB
+                colors = image[mask > 0][:, [2, 1, 0]]  # Convert BGR to RGB
 
+                # Remove pure black points from the point cloud
+                non_black = np.any(colors != 0, axis=1)
+                points = points[non_black]
+                colors = colors[non_black] / 255.0
+
+                pc = o3d.geometry.PointCloud()
                 pc.points = o3d.utility.Vector3dVector(points)
                 pc.colors = o3d.utility.Vector3dVector(colors)
                 sphere = o3d.geometry.TriangleMesh.create_sphere(

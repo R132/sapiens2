@@ -82,3 +82,6 @@ wandb/
 # Misc
 .claude/
 *.profraw
+
+# Ignore local demo data folder
+/demo/

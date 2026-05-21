@@ -2,30 +2,31 @@
 # Run body-part segmentation on a directory of images.
 
 cd "$(dirname "$(realpath "$0")")/../.." || exit
-SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-${HOME}/sapiens2_host}"
+SAPIENS_CHECKPOINT_ROOT="${SAPIENS_CHECKPOINT_ROOT:-/home/gj/Projects/2026.04.30-sapiens2/sapiens2_host}"
 
 #----------------------------set your input and output directories-------------------------
-INPUT='../../demo/data'
-OUTPUT="${HOME}/Desktop/sapiens2/seg/Outputs/vis"
+# INPUT='../../demo/data'
+INPUT='/home/gj/Projects/2026.04.30-sapiens2/demo_img'
+OUTPUT="/home/gj/Projects/2026.04.30-sapiens2/outputs/seg/"
 
 #--------------------------MODEL CARD (uncomment one)---------------------------------------
-# MODEL_NAME='sapiens2_0.4b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_0.4b_seg.safetensors"
+MODEL_NAME='sapiens2_0.4b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_0.4b_seg.safetensors"
 # MODEL_NAME='sapiens2_0.8b'; CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_0.8b_seg.safetensors"
-MODEL_NAME='sapiens2_1b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_1b_seg.safetensors"
+# MODEL_NAME='sapiens2_1b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_1b_seg.safetensors"
 # MODEL_NAME='sapiens2_5b';   CHECKPOINT="${SAPIENS_CHECKPOINT_ROOT}/seg/sapiens2_5b_seg.safetensors"
 
 DATASET='shutterstock_goliath'
 MODEL="${MODEL_NAME}_seg_${DATASET}-1024x768"
 CONFIG_FILE="configs/seg/${DATASET}/${MODEL}.py"
-OUTPUT="${OUTPUT}/${MODEL_NAME}"
+# OUTPUT="${OUTPUT}/${MODEL_NAME}"
 
 CLASS_PALETTE="dome29"
 
 ##-------------------------------------inference--------------------------------------------
 RUN_FILE='tools/vis/vis_seg.py'
 
-JOBS_PER_GPU=3; GPU_IDS=(0 1 2 3 4 5 6 7)
-# JOBS_PER_GPU=1; GPU_IDS=(0)
+# JOBS_PER_GPU=3; GPU_IDS=(0 1 2 3 4 5 6 7)
+JOBS_PER_GPU=1; GPU_IDS=(0)
 TOTAL_JOBS=$((JOBS_PER_GPU * ${#GPU_IDS[@]}))
 
 IMAGE_LIST="${INPUT}/image_list.txt"
