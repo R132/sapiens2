@@ -137,6 +137,11 @@ def main():
         default=None,
         help="Override predictions JSON filename (used by helper for per-chunk writes).",
     )
+    parser.add_argument(
+        "--show-score",
+        default=True,
+        help="Draw keypoint confidence scores next to each keypoint.",
+    )
 
     args = parser.parse_args()
 
@@ -205,6 +210,7 @@ def main():
             skeleton=model.pose_metainfo["skeleton_links"],
             kpt_color=model.pose_metainfo["keypoint_colors"],
             link_color=model.pose_metainfo["skeleton_link_colors"],
+            show_score=args.show_score,
         )
         vis_image = cv2.cvtColor(vis_image_rgb, cv2.COLOR_RGB2BGR)
         save_path = os.path.join(args.output, image_name)

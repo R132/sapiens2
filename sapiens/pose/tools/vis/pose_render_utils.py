@@ -22,6 +22,7 @@ def visualize_keypoints(
     kpt_color: list | tuple | np.ndarray | None = None,
     link_color: list | tuple | np.ndarray | None = None,
     show_kpt_idx: bool = False,
+    show_score: bool = True,
 ) -> np.ndarray:
     img = image.copy()
     H, W = img.shape[:2]
@@ -117,4 +118,36 @@ def visualize_keypoints(
                     1,
                     cv2.LINE_AA,
                 )
+            if show_score:
+                text = f"{s:.2f}"
+                font_scale = 0.35
+                text_color = (0, 0, 0)  # black in RGB
+                alpha = 0.8
+                text_org = (x + radius + 1, y + radius + 1)
+                (tw, th), baseline = cv2.getTextSize(
+                    text, cv2.FONT_HERSHEY_SIMPLEX, font_scale, 1
+                )
+                # draw on overlay for alpha blending
+                overlay = img.copy()
+                cv2.putText(
+                    overlay,
+                    text,
+                    text_org,
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    font_scale,
+                    text_color,
+                    1,
+                    cv2.LINE_AA,
+                )
+                # blend overlay with original
+                x1 = max(0, text_org[0])
+                y1 = max(0, text_org[1] - th)
+                x2 = min(W, text_org[0] + tw)
+                y2 = min(H, text_org[1] + baseline)
+                if x1 < x2 and y1 < y2:
+                    img[y1:y2, x1:x2] = cv2.addWeighted(
+                        overlay[y1:y2, x1:x2], alpha,
+                        img[y1:y2, x1:x2], 1 - alpha,
+                        0,
+                    )
     return img
